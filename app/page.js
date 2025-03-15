@@ -1,12 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  FaBook,
-  FaPen,
-  FaQuoteRight,
-  FaTrophy,
-  FaRocket,
-} from "react-icons/fa";
+import { FaRocket } from "react-icons/fa";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 export default function Home() {
   return (
@@ -55,6 +50,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <PWAInstallPrompt />
 
       {/* Learning Paths */}
       <section className="container mx-auto px-4 md:px-6 py-8 md:py-12">

@@ -1,0 +1,52 @@
+{
+  "theme_color": "#8936FF",
+  "background_color": "#2EC6FE",
+  "icons": [
+    {
+      "purpose": "maskable",
+      "sizes": "512x512",
+      "src": "icon512_maskable.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any",
+      "sizes": "512x512",
+      "src": "icon512_rounded.png",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait",
+  "display": "standalone",
+  "dir": "auto",
+  "lang": "en",
+  "name": "interactive-quiz",
+  "short_name": "Quiz!",
+  "start_url": "/",
+  "description": "Learn English Grammar the Fun Way! 🎉",
+  "id": "learn-english",
+  "categories": ["education", "games", "entertainment"],
+  "iarc_rating_id": "13",
+  "prefer_related_applications": false,
+  "screenshots": [
+    {
+      "src": "screenshots/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "screenshots/screenshot2.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "screenshots/screenshot3.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "screenshots/screenshot-wide.png",
+      "sizes": "1920x1080",
+      "type": "image/png"
+    }
+  ]
+}
