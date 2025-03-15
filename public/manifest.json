@@ -22,8 +22,8 @@
   "name": "interactive-quiz",
   "short_name": "Quiz!",
   "start_url": "/",
-  "description": "Learn English Grammar the Fun Way! 🎉",
-  "id": "learn-english",
+  "description": "Learn English Grammar the Fun Way! 🎉! \n\nProvided by: Madelene Quebrata.\nDeveloped by: Uel",
+  "id": "learn-english-kids",
   "categories": ["education", "games", "entertainment"],
   "iarc_rating_id": "13",
   "prefer_related_applications": false,
@@ -31,22 +31,30 @@
     {
       "src": "screenshots/screenshot1.png",
       "sizes": "1280x720",
-      "type": "image/png"
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Step 1"
     },
     {
       "src": "screenshots/screenshot2.png",
       "sizes": "1280x720",
-      "type": "image/png"
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Step 2"
     },
     {
       "src": "screenshots/screenshot3.png",
       "sizes": "1280x720",
-      "type": "image/png"
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Step 3"
     },
     {
       "src": "screenshots/screenshot-wide.png",
       "sizes": "1920x1080",
-      "type": "image/png"
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Wide View"
     }
   ]
 }

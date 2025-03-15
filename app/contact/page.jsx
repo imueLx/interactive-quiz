@@ -1,35 +1,54 @@
 import React from "react";
-import { FaEnvelope, FaPhone } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaSmile } from "react-icons/fa";
 
 const ContactPage = () => {
   return (
-    <div className="container mx-auto p-6 bg-yellow-100 rounded-lg shadow-md text-center">
-      <h1 className="text-4xl font-bold mb-4 text-purple-600">
-        Contact Your Teacher
-      </h1>
-      <p className="text-lg mb-6 text-gray-700">
-        If you have any questions, feel free to reach out to your teacher:
-      </p>
-      <div className="flex flex-col items-center">
-        <p className="text-xl mb-4 text-gray-800 flex items-center">
-          <FaEnvelope className="mr-2 text-red-500" />
-          <a href="mailto:teacher@example.com" className="hover:underline">
-            teacher@example.com
-          </a>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8 border-2 border-purple-100">
+        <div className="text-center mb-6">
+          <FaSmile className="text-4xl text-purple-500 mx-auto mb-4 animate-bounce" />
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            Let's Chat! 💬
+          </h1>
+          <p className="text-gray-600">
+            No question is too small - I'm happy to help!
+          </p>
+        </div>
+
+        <div className="space-y-5">
+          <div className="p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+            <div className="flex items-center space-x-3">
+              <FaEnvelope className="text-2xl text-purple-600" />
+              <a
+                href="mailto:teacher@example.com"
+                className="text-gray-700 hover:text-purple-600 transition-colors font-medium"
+              >
+                Shoot me an email
+              </a>
+            </div>
+            <p className="text-sm text-gray-500 mt-1 ml-9">
+              teacher@example.com
+            </p>
+          </div>
+
+          <div className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+            <div className="flex items-center space-x-3">
+              <FaPhone className="text-2xl text-blue-600" />
+              <a
+                href="tel:+1234567890"
+                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              >
+                Give me a call
+              </a>
+            </div>
+            <p className="text-sm text-gray-500 mt-1 ml-9">(123) 456-7890</p>
+          </div>
+        </div>
+
+        <p className="mt-6 text-center text-gray-500 text-sm flex items-center justify-center">
+          <span className="mr-2">📌</span>
+          Don't worry, I'm here to help!
         </p>
-        <p className="text-xl text-gray-800 flex items-center">
-          <FaPhone className="mr-2 text-green-500" />
-          <a href="tel:+1234567890" className="hover:underline">
-            (123) 456-7890
-          </a>
-        </p>
-      </div>
-      <div className="mt-6">
-        <img
-          src="https://example.com/fun-teacher.png"
-          alt="Fun Teacher"
-          className="mx-auto w-1/2 rounded-full border-4 border-purple-300"
-        />
       </div>
     </div>
   );
