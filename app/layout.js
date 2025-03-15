@@ -25,7 +25,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        {children}
+        <main className="min-h-screen">
+          {" "}
+          {/* Add padding-top */}
+          {children}
+        </main>
         <Footer />
       </body>
     </html>
