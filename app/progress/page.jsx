@@ -62,40 +62,27 @@ const userIcons = [
   FaUserSecret,
 ];
 
-const mockResults = [
-  { studentName: "Alex", quizTopic: "Rule 1: Subjects & Verbs", score: 100 },
-  { studentName: "Casey", quizTopic: "Rule 1: Subjects & Verbs", score: 95 },
-  { studentName: "Riley", quizTopic: "Rule 1: Subjects & Verbs", score: 88 },
-  { studentName: "Jamie", quizTopic: "Rule 1: Subjects & Verbs", score: 80 },
-  {
-    studentName: "Taylor",
-    quizTopic: "Rule 2: Prepositional Phrases",
-    score: 90,
-  },
-  { studentName: "Morgan", quizTopic: "Rule 3: Compound Subjects", score: 85 },
-];
-
 const quizTopics = [
-  "Rule 1: Subjects & Verbs",
-  "Rule 2: Prepositional Phrases",
-  "Rule 3: Compound Subjects",
-  "Rule 4: There/Here Subjects",
-  "Rule 5: Question Subjects",
-  "Rule 6: And-Connected Subjects",
-  "Rule 7: Same Entity Subjects",
-  "Rule 8: Each/Every/No",
-  "Rule 9: Either/Or Subjects",
-  "Rule 10: Prepositional Quantities",
-  "Rule 11: Units of Measurement",
-  "Rule 12: Or/Nor with Plural Subjects",
-  "Rule 13: Mixed Or/Nor Subjects",
-  "Rule 14: Indefinite Pronouns",
-  "Rule 15: Plural Pronouns (Few, Many, Several)",
-  "Rule 16: Two Infinitives with 'And'",
-  "Rule 17: Gerunds as Subjects",
-  "Rule 18: Collective Nouns",
-  "Rule 19: Titles of Books, Movies, & Novels",
-  "Rule 20: Subject Determines the Verb",
+  { id: "rule1", name: "Rule 1: Subjects & Verbs" },
+  { id: "rule2", name: "Rule 2: Prepositional Phrases" },
+  { id: "rule3", name: "Rule 3: Compound Subjects" },
+  { id: "rule4", name: "Rule 4: There/Here Subjects" },
+  { id: "rule5", name: "Rule 5: Question Subjects" },
+  { id: "rule6", name: "Rule 6: And-Connected Subjects" },
+  { id: "rule7", name: "Rule 7: Same Entity Subjects" },
+  { id: "rule8", name: "Rule 8: Each/Every/No" },
+  { id: "rule9", name: "Rule 9: Either/Or Subjects" },
+  { id: "rule10", name: "Rule 10: Prepositional Quantities" },
+  { id: "rule11", name: "Rule 11: Units of Measurement" },
+  { id: "rule12", name: "Rule 12: Or/Nor with Plural Subjects" },
+  { id: "rule13", name: "Rule 13: Mixed Or/Nor Subjects" },
+  { id: "rule14", name: "Rule 14: Indefinite Pronouns" },
+  { id: "rule15", name: "Rule 15: Plural Pronouns (Few, Many, Several)" },
+  { id: "rule16", name: "Rule 16: Two Infinitives with 'And'" },
+  { id: "rule17", name: "Rule 17: Gerunds as Subjects" },
+  { id: "rule18", name: "Rule 18: Collective Nouns" },
+  { id: "rule19", name: "Rule 19: Titles of Books, Movies, & Novels" },
+  { id: "rule20", name: "Rule 20: Subject Determines the Verb" },
 ];
 
 export default function ProgressPage() {
@@ -103,21 +90,30 @@ export default function ProgressPage() {
   const [expandedTopics, setExpandedTopics] = useState([]);
   const [collapsedRules, setCollapsedRules] = useState([]);
 
+  // Fetch quiz results on page load
   useEffect(() => {
-    setTimeout(() => {
-      setQuizResults(mockResults);
-    }, 500);
+    const fetchResults = async () => {
+      const response = await fetch("/api/results");
+      const data = await response.json();
+      setQuizResults(data);
+    };
+
+    fetchResults();
   }, []);
 
-  const toggleCollapse = (rule) => {
+  const toggleCollapse = (ruleId) => {
     setCollapsedRules((prev) =>
-      prev.includes(rule) ? prev.filter((r) => r !== rule) : [...prev, rule]
+      prev.includes(ruleId)
+        ? prev.filter((r) => r !== ruleId)
+        : [...prev, ruleId]
     );
   };
 
-  const toggleExpanded = (topic) => {
+  const toggleExpanded = (topicId) => {
     setExpandedTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+      prev.includes(topicId)
+        ? prev.filter((t) => t !== topicId)
+        : [...prev, topicId]
     );
   };
 
@@ -148,21 +144,21 @@ export default function ProgressPage() {
             const IconComponent = ruleIcons[index].icon;
             const iconColor = ruleIcons[index].color;
             const topicResults = quizResults
-              .filter((r) => r.quizTopic === topic)
+              .filter((r) => r.ruleId === topic.id)
               .sort((a, b) => b.score - a.score);
 
-            const showCount = expandedTopics.includes(topic) ? 10 : 3;
+            const showCount = expandedTopics.includes(topic.id) ? 10 : 3;
             const visibleResults = topicResults.slice(0, showCount);
-            const isCollapsed = collapsedRules.includes(topic);
+            const isCollapsed = collapsedRules.includes(topic.id);
 
             return (
               <div
-                key={topic}
+                key={topic.id}
                 className="bg-white p-3 rounded-xl border-2 border-gray-100"
               >
                 {/* Rule Header with Fun Icon */}
                 <button
-                  onClick={() => toggleCollapse(topic)}
+                  onClick={() => toggleCollapse(topic.id)}
                   className="w-full flex items-center justify-between gap-3 p-2 hover:bg-gray-50 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
@@ -172,7 +168,7 @@ export default function ProgressPage() {
                       <IconComponent className={`text-2xl ${iconColor}`} />
                     </div>
                     <h2 className="text-left font-semibold text-gray-800">
-                      {topic}
+                      {topic.name}
                     </h2>
                   </div>
                   {isCollapsed ? (
@@ -204,7 +200,7 @@ export default function ProgressPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-medium text-gray-700 truncate">
-                              {result.studentName}
+                              {result.name}
                             </div>
                             <div className="flex items-center gap-2">
                               <div className="h-2 rounded-full bg-gray-200 w-full">
@@ -224,16 +220,18 @@ export default function ProgressPage() {
 
                     {topicResults.length > 3 && (
                       <button
-                        onClick={() => toggleExpanded(topic)}
+                        onClick={() => toggleExpanded(topic.id)}
                         className="w-full text-center text-blue-600 hover:text-blue-800 text-sm font-medium pt-2"
                       >
                         <div className="inline-flex items-center gap-1">
-                          {expandedTopics.includes(topic)
+                          {expandedTopics.includes(topic.id)
                             ? "Show less 🎈"
                             : "View more 🚀"}
                           <FaChevronDown
                             className={`transition-transform ${
-                              expandedTopics.includes(topic) ? "rotate-180" : ""
+                              expandedTopics.includes(topic.id)
+                                ? "rotate-180"
+                                : ""
                             }`}
                           />
                         </div>
