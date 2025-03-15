@@ -19,8 +19,8 @@
   "display": "standalone",
   "dir": "auto",
   "lang": "en",
-  "name": "interactive-quiz",
-  "short_name": "Quiz!",
+  "name": "Interactive English Quiz for Kids",
+  "short_name": "E-Quiz!",
   "start_url": "/",
   "description": "Learn English Grammar the Fun Way! 🎉! \n\nProvided by: Madelene Quebrata.\nDeveloped by: Uel",
   "id": "learn-english-kids",
@@ -30,30 +30,31 @@
   "screenshots": [
     {
       "src": "screenshots/screenshot1.png",
-      "sizes": "1280x720",
+      "sizes": "366x749",
       "type": "image/png",
       "platform": "narrow",
       "label": "Step 1"
     },
     {
       "src": "screenshots/screenshot2.png",
-      "sizes": "1280x720",
+      "sizes": "367x749",
       "type": "image/png",
       "platform": "narrow",
       "label": "Step 2"
     },
     {
       "src": "screenshots/screenshot3.png",
-      "sizes": "1280x720",
+      "sizes": "371x742",
       "type": "image/png",
       "platform": "narrow",
       "label": "Step 3"
     },
     {
       "src": "screenshots/screenshot-wide.png",
-      "sizes": "1920x1080",
+      "sizes": "1134x1261",
       "type": "image/png",
       "platform": "wide",
+      "form_factor": "wide",
       "label": "Wide View"
     }
   ]
