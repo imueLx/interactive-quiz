@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import QuizIntro from "../../components/QuizIntro";
 import QuizQuestion from "../../components/QuizQuestion";
 import QuizResults from "../../components/QuizResults";
+import Loading from "./loading";
 
 const quizTopics = [
   { id: "rule1", name: "Subjects & Verbs Must Agree", color: "bg-blue-500" },
@@ -87,7 +88,7 @@ export default function QuizPage() {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [quizDetails, setQuizDetails] = useState({});
 
-  // Fetch quiz questions when rule changes
+  // Fetch quiz questions based on the selected rule
   useEffect(() => {
     const fetchQuizQuestions = async () => {
       try {
@@ -161,7 +162,7 @@ export default function QuizPage() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>Error: {error}</div>;
   if (quizCompleted)
     return (
