@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FaDownload, FaShareAlt } from "react-icons/fa";
 import { IoShareOutline } from "react-icons/io5";
 import { PiPlusSquare } from "react-icons/pi";
+import { saveAllQuizzes } from "../lib/idb";
 
 const PWAInstallPrompt = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -38,13 +39,25 @@ const PWAInstallPrompt = () => {
     };
   }, []);
 
-  const handleInstallClick = () => {
+  // Update your PWAInstallPrompt component
+  const handleInstallClick = async () => {
     if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      setDeferredPrompt(null);
-      setIsVisible(false);
-    });
+
+    try {
+      // Ensure data is cached before installation
+      const response = await fetch("/api/all-questions");
+      const quizzes = await response.json();
+      await saveAllQuizzes(quizzes);
+
+      // Trigger installation prompt
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        setDeferredPrompt(null);
+        setIsVisible(false);
+      });
+    } catch (error) {
+      console.error("Failed to cache data before installation:", error);
+    }
   };
 
   const handleIosInstallClick = () => {

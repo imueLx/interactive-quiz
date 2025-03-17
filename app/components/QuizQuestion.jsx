@@ -10,6 +10,7 @@ const QuizQuestion = ({
   selectedAnswers,
   quizTopics,
   ruleId,
+  isSubmitting,
 }) => {
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
 
@@ -99,9 +100,19 @@ const QuizQuestion = ({
             <button
               onClick={handleSubmit}
               className="px-6 py-3 bg-gradient-to-r from-green-400 to-blue-400 text-white rounded-xl font-bold shadow-lg hover:scale-105 transition-all flex items-center gap-2"
+              disabled={isSubmitting}
             >
-              Finish! 🎉
-              <span className="text-xl">🏆</span>
+              {isSubmitting ? (
+                <>
+                  <span className="animate-spin">⏳</span>
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  Finish! 🎉
+                  <span className="text-xl">🏆</span>
+                </>
+              )}
             </button>
           ) : (
             <button

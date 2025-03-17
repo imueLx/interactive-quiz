@@ -36,6 +36,8 @@ export async function GET(request) {
         status: 200,
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "public, max-age=600, stale-while-revalidate=300",
+          "CDN-Cache-Control": "public, max-age=1800",
         },
       }
     );

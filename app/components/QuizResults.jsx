@@ -1,7 +1,14 @@
 import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
 
-const QuizResults = ({ selectedAnswers, questions, quizTopics, ruleId }) => {
+const QuizResults = ({
+  selectedAnswers,
+  questions,
+  quizTopics,
+  ruleId,
+  submissionStatus,
+  onReturn,
+}) => {
   const correctAnswers = questions.filter(
     (q, index) => selectedAnswers[index] === q.answer
   ).length;
@@ -122,13 +129,34 @@ const QuizResults = ({ selectedAnswers, questions, quizTopics, ruleId }) => {
 
         {/* Action Button */}
         <button
-          onClick={() => router.push("/")}
+          onClick={onReturn}
           className="w-full mt-8 py-4 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl font-bold shadow-lg hover:scale-105 transition-all flex items-center justify-center gap-2"
         >
           <span className="text-2xl">🏠</span>
           Back to Quiz Menu
           <span className="text-2xl">🎮</span>
         </button>
+      </div>
+      <div className="mt-4 text-center text-black">
+        {/* Submission Status */}
+        {submissionStatus === "pending" && (
+          <div className="mt-8 p-4 bg-yellow-100 rounded-xl text-center">
+            <div className="text-xl font-semibold text-yellow-800">
+              ⚠️ Results saved locally - will auto-sync when online
+            </div>
+          </div>
+        )}
+
+        {submissionStatus === "error" && (
+          <div className="bg-red-100 p-4 rounded-lg mt-4">
+            <p>Error submitting results. Please try again later.</p>
+          </div>
+        )}
+        {submissionStatus === "submitted" && (
+          <div className="bg-green-100 text-black p-4 rounded-lg mt-4">
+            <p>Results submitted successfully!</p>
+          </div>
+        )}
       </div>
 
       {/* Floating Animals */}

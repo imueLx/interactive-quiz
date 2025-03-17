@@ -1,12 +1,21 @@
-// app/quiz/page.jsx (Server Component)
+// app/quiz/page.jsx
 import { Suspense } from "react";
-import QuizSelectionForm from "../../components/QuizSelection";
+import QuizSelectionForm from "../components/QuizSelection";
+import QuizFlow from "../components/QuizFlow";
 import Loading from "./loading";
 
-export default function QuizPage() {
+export default async function QuizPage({ searchParams }) {
+  const params = await searchParams;
+
   return (
-    <Suspense fallback={<Loading />}>
-      <QuizSelectionForm />
-    </Suspense>
+    <div className="quiz-container">
+      <Suspense fallback={<Loading />}>
+        {!params?.rule ? (
+          <QuizSelectionForm />
+        ) : (
+          <QuizFlow rule={params.rule} />
+        )}
+      </Suspense>
+    </div>
   );
 }

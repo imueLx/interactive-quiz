@@ -89,13 +89,21 @@ export default function ProgressPage() {
   const [quizResults, setQuizResults] = useState([]);
   const [expandedTopics, setExpandedTopics] = useState([]);
   const [collapsedRules, setCollapsedRules] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Fetch quiz results on page load
   useEffect(() => {
     const fetchResults = async () => {
-      const response = await fetch("/api/results");
-      const data = await response.json();
-      setQuizResults(data);
+      setLoading(true); // Set loading to true before fetching
+      try {
+        const response = await fetch("/api/results");
+        const data = await response.json();
+        setQuizResults(data);
+      } catch (error) {
+        console.error("Error fetching results:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
+      }
     };
 
     fetchResults();
@@ -140,116 +148,131 @@ export default function ProgressPage() {
 
         {/* Rules Grid */}
         <div className="grid grid-cols-1 gap-2">
-          {quizTopics.map((topic, index) => {
-            const IconComponent = ruleIcons[index].icon;
-            const iconColor = ruleIcons[index].color;
-            const topicResults = quizResults
-              .filter((r) => r.ruleId === topic.id)
-              .sort((a, b) => b.score - a.score);
-
-            const showCount = expandedTopics.includes(topic.id) ? 10 : 3;
-            const visibleResults = topicResults.slice(0, showCount);
-            const isCollapsed = collapsedRules.includes(topic.id);
-
-            return (
-              <div
-                key={topic.id}
-                className="bg-white p-3 rounded-xl border-2 border-gray-100"
-              >
-                {/* Rule Header with Fun Icon */}
-                <button
-                  onClick={() => toggleCollapse(topic.id)}
-                  className="w-full flex items-center justify-between gap-3 p-2 hover:bg-gray-50 rounded-lg"
+          {loading
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-white p-3 rounded-xl border-2 border-gray-100 animate-pulse"
                 >
                   <div className="flex items-center gap-3">
-                    <div
-                      className={`p-2 rounded-lg bg-opacity-20 ${iconColor}`}
-                    >
-                      <IconComponent className={`text-2xl ${iconColor}`} />
+                    <div className="p-2 rounded-lg bg-gray-200 w-10 h-10"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                     </div>
-                    <h2 className="text-left font-semibold text-gray-800">
-                      {topic.name}
-                    </h2>
                   </div>
-                  {isCollapsed ? (
-                    <FaChevronDown className="text-gray-500" />
-                  ) : (
-                    <FaChevronUp className="text-gray-500" />
-                  )}
-                </button>
+                </div>
+              ))
+            : quizTopics.map((topic, index) => {
+                const IconComponent = ruleIcons[index].icon;
+                const iconColor = ruleIcons[index].color;
+                const topicResults = quizResults
+                  .filter((r) => r.ruleId === topic.id)
+                  .sort((a, b) => b.score - a.score);
 
-                {/* Collapsible Content */}
-                {!isCollapsed && (
-                  <div className="mt-3 space-y-3">
-                    {visibleResults.map((result, idx) => {
-                      const UserIcon = getRandomUserIcon();
-                      return (
+                const showCount = expandedTopics.includes(topic.id) ? 10 : 3;
+                const visibleResults = topicResults.slice(0, showCount);
+                const isCollapsed = collapsedRules.includes(topic.id);
+
+                return (
+                  <div
+                    key={topic.id}
+                    className="bg-white p-3 rounded-xl border-2 border-gray-100"
+                  >
+                    {/* Rule Header with Fun Icon */}
+                    <button
+                      onClick={() => toggleCollapse(topic.id)}
+                      className="w-full flex items-center justify-between gap-3 p-2 hover:bg-gray-50 rounded-lg"
+                    >
+                      <div className="flex items-center gap-3">
                         <div
-                          key={idx}
-                          className="flex items-center gap-3 group"
+                          className={`p-2 rounded-lg bg-opacity-20 ${iconColor}`}
                         >
-                          <div className="relative">
-                            <UserIcon className="text-3xl text-gray-400 flex-shrink-0" />
-                            <span className="absolute -right-1 -bottom-1 bg-white rounded-full p-0.5">
-                              <div className="w-4 h-4 rounded-full bg-blue-400 flex items-center justify-center">
-                                <span className="text-white text-xs">
-                                  {idx + 1}
+                          <IconComponent className={`text-2xl ${iconColor}`} />
+                        </div>
+                        <h2 className="text-left font-semibold text-gray-800">
+                          {topic.name}
+                        </h2>
+                      </div>
+                      {isCollapsed ? (
+                        <FaChevronDown className="text-gray-500" />
+                      ) : (
+                        <FaChevronUp className="text-gray-500" />
+                      )}
+                    </button>
+
+                    {/* Collapsible Content */}
+                    {!isCollapsed && (
+                      <div className="mt-3 space-y-3">
+                        {visibleResults.map((result, idx) => {
+                          const UserIcon = getRandomUserIcon();
+                          return (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-3 group"
+                            >
+                              <div className="relative">
+                                <UserIcon className="text-3xl text-gray-400 flex-shrink-0" />
+                                <span className="absolute -right-1 -bottom-1 bg-white rounded-full p-0.5">
+                                  <div className="w-4 h-4 rounded-full bg-blue-400 flex items-center justify-center">
+                                    <span className="text-white text-xs">
+                                      {idx + 1}
+                                    </span>
+                                  </div>
                                 </span>
                               </div>
-                            </span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-gray-700 truncate">
-                              {result.name}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="h-2 rounded-full bg-gray-200 w-full">
-                                <div
-                                  className="h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-500"
-                                  style={{ width: `${result.score}%` }}
-                                />
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium text-gray-700 truncate">
+                                  {result.name}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className="h-2 rounded-full bg-gray-200 w-full">
+                                    <div
+                                      className="h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-500"
+                                      style={{ width: `${result.score}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-sm text-gray-600">
+                                    {result.score}% 🌟
+                                  </span>
+                                </div>
                               </div>
-                              <span className="text-sm text-gray-600">
-                                {result.score}% 🌟
-                              </span>
                             </div>
+                          );
+                        })}
+
+                        {topicResults.length > 3 && (
+                          <button
+                            onClick={() => toggleExpanded(topic.id)}
+                            className="w-full text-center text-blue-600 hover:text-blue-800 text-sm font-medium pt-2"
+                          >
+                            <div className="inline-flex items-center gap-1">
+                              {expandedTopics.includes(topic.id)
+                                ? "Show less 🎈"
+                                : "View more 🚀"}
+                              <FaChevronDown
+                                className={`transition-transform ${
+                                  expandedTopics.includes(topic.id)
+                                    ? "rotate-180"
+                                    : ""
+                                }`}
+                              />
+                            </div>
+                          </button>
+                        )}
+
+                        {topicResults.length === 0 && (
+                          <div className="text-center p-3 bg-gray-50 rounded-xl">
+                            <p className="text-gray-600 text-sm">
+                              No submissions yet - be the first! 🌟
+                            </p>
                           </div>
-                        </div>
-                      );
-                    })}
-
-                    {topicResults.length > 3 && (
-                      <button
-                        onClick={() => toggleExpanded(topic.id)}
-                        className="w-full text-center text-blue-600 hover:text-blue-800 text-sm font-medium pt-2"
-                      >
-                        <div className="inline-flex items-center gap-1">
-                          {expandedTopics.includes(topic.id)
-                            ? "Show less 🎈"
-                            : "View more 🚀"}
-                          <FaChevronDown
-                            className={`transition-transform ${
-                              expandedTopics.includes(topic.id)
-                                ? "rotate-180"
-                                : ""
-                            }`}
-                          />
-                        </div>
-                      </button>
-                    )}
-
-                    {topicResults.length === 0 && (
-                      <div className="text-center p-3 bg-gray-50 rounded-xl">
-                        <p className="text-gray-600 text-sm">
-                          No submissions yet - be the first! 🌟
-                        </p>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
         </div>
 
         {/* Fun Footer */}

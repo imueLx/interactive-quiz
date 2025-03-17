@@ -5,18 +5,21 @@ import { useEffect } from "react";
 const RegisterSW = () => {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
+      // Handle controller updates
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
+
       window.addEventListener("load", () => {
         navigator.serviceWorker
           .register("/sw.js")
           .then((registration) => {
-            console.log(
-              "ServiceWorker registration successful with scope: ",
-              registration.scope
-            );
+            console.log("ServiceWorker registered");
+            registration.addEventListener("updatefound", () => {
+              console.log("New service worker found");
+            });
           })
-          .catch((error) => {
-            console.log("ServiceWorker registration failed: ", error);
-          });
+          .catch(console.error);
       });
     }
   }, []);
