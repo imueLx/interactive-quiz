@@ -12,6 +12,7 @@
     "@serwist/next": "^9.0.12",
     "bcrypt": "^5.1.1",
     "framer-motion": "^12.5.0",
+    "idb": "^8.0.2",
     "mongoose": "^8.12.1",
     "next": "15.2.2",
     "next-auth": "^4.24.11",
