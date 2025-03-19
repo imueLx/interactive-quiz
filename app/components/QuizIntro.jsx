@@ -1,76 +1,33 @@
-import React from "react";
-const quizTopics = [
-  { id: "rule1", name: "Subjects & Verbs Must Agree", color: "bg-blue-500" },
-  {
-    id: "rule2",
-    name: "Words Between Subject & Verb",
-    color: "bg-green-500",
-  },
-  { id: "rule3", name: "Prepositional Phrases", color: "bg-purple-500" },
-  { id: "rule4", name: "'There' & 'Here' Sentences", color: "bg-yellow-500" },
-  {
-    id: "rule5",
-    name: "Questions & Subject Placement",
-    color: "bg-pink-500",
-  },
-  { id: "rule6", name: "Compound Subjects ('and')", color: "bg-red-500" },
-  {
-    id: "rule7",
-    name: "Same Entity Compound Subjects",
-    color: "bg-teal-500",
-  },
-  {
-    id: "rule8",
-    name: "Each, Every, No - Singular Rule",
-    color: "bg-orange-500",
-  },
-  {
-    id: "rule9",
-    name: "Singular Subjects with 'Or'/'Nor'",
-    color: "bg-indigo-500",
-  },
-  {
-    id: "rule10",
-    name: "Prepositional Phrases & Quantifiers",
-    color: "bg-lime-500",
-  },
-  { id: "rule11", name: "Units of Measurement", color: "bg-cyan-500" },
-  {
-    id: "rule12",
-    name: "Plural Subjects with 'Or'/'Nor'",
-    color: "bg-rose-500",
-  },
-  {
-    id: "rule13",
-    name: "Mixed Subjects with 'Or'/'Nor'",
-    color: "bg-fuchsia-500",
-  },
-  { id: "rule14", name: "Indefinite Pronouns", color: "bg-violet-500" },
-  {
-    id: "rule15",
-    name: "Plural Pronouns: Few, Many, Several",
-    color: "bg-emerald-500",
-  },
-  {
-    id: "rule16",
-    name: "Two Infinitives Joined by 'And'",
-    color: "bg-blue-400",
-  },
-  { id: "rule17", name: "Gerunds as Subjects", color: "bg-green-400" },
-  { id: "rule18", name: "Collective Nouns", color: "bg-purple-400" },
-  {
-    id: "rule19",
-    name: "Titles of Books, Movies, & Novels",
-    color: "bg-yellow-400",
-  },
-  {
-    id: "rule20",
-    name: "Only the Subject Affects the Verb",
-    color: "bg-pink-400",
-  },
-];
+"use client";
+import React, { useEffect, useState } from "react";
 
 const QuizIntro = ({ quizDetails, ruleId, startQuiz }) => {
+  const [topics, setTopics] = useState([]);
+
+  useEffect(() => {
+    async function loadTopics() {
+      // Try to load topics from localStorage first.
+      const stored = localStorage.getItem("quizTopics");
+      if (stored) {
+        setTopics(JSON.parse(stored));
+      } else {
+        try {
+          const res = await fetch("/api/get-title");
+          const data = await res.json();
+          setTopics(data);
+          localStorage.setItem("quizTopics", JSON.stringify(data));
+        } catch (err) {
+          console.error("Error fetching topics:", err);
+        }
+      }
+    }
+    loadTopics();
+  }, []);
+
+  // Look up the topic based on ruleId.
+  // Assuming ruleId is in the format "ruleX" and topics have a numeric ruleNumber.
+  const currentTopic = topics.find((t) => t.ruleNumber === ruleId) || {};
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 p-6 animate-pulse-slow">
       {/* Animated Mascot */}
@@ -97,7 +54,7 @@ const QuizIntro = ({ quizDetails, ruleId, startQuiz }) => {
           </div>
           <div className="text-2xl font-bold text-purple-700 flex items-center gap-2">
             <span className="text-pink-500">📚</span>
-            {quizTopics.find((t) => t.id === ruleId)?.name || "Mystery Mission"}
+            {currentTopic.title || "Mystery Mission"}
           </div>
         </div>
 

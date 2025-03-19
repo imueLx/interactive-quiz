@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const adminSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
@@ -7,7 +7,6 @@ const adminSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-// Hash PIN before saving
 adminSchema.pre("save", async function (next) {
   if (this.isModified("pin")) {
     this.pin = await bcrypt.hash(this.pin, 10);
@@ -15,9 +14,8 @@ adminSchema.pre("save", async function (next) {
   next();
 });
 
-// Compare PIN
-adminSchema.methods.comparePin = function (pin) {
+adminSchema.methods.comparePin = async function (pin) {
   return bcrypt.compare(pin, this.pin);
 };
 
-export default mongoose.models.User || mongoose.model("Admin", adminSchema);
+export default mongoose.models.Admin || mongoose.model("Admin", adminSchema);

@@ -1,66 +1,36 @@
 import { NextResponse } from "next/server";
-import dbConnect from "../../../lib/dbConnect";
-import Quiz from "../../../models/Quiz";
+import dbConnect from "@/lib/dbConnect";
+import Quiz from "@/models/Quiz";
 
-// GET all quizzes
 export async function GET() {
-  try {
-    await dbConnect();
-    const quizzes = await Quiz.find().select("-__v").lean(); // .lean() for better performance
-
-    return NextResponse.json({ success: true, data: quizzes });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: "Failed to fetch quizzes" },
-      { status: 500 }
-    );
-  }
+  await dbConnect();
+  const quizzes = await Quiz.find();
+  return NextResponse.json(quizzes);
 }
 
-// CREATE new quiz
+// POST - Create new quiz
 export async function POST(request) {
-  try {
-    await dbConnect();
-    const body = await request.json();
+  await dbConnect();
+  const body = await request.json();
 
-    // Basic validation
-    if (!body.title || !body.questions) {
-      return NextResponse.json(
-        { success: false, error: "Missing required fields" },
+  try {
+    // Check if a quiz with the same rule number already exists
+    const existingQuiz = await Quiz.findOne({ ruleNumber: body.ruleNumber });
+    if (existingQuiz) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Rule number already exists" }),
         { status: 400 }
       );
     }
 
     const newQuiz = await Quiz.create(body);
-    return NextResponse.json({ success: true, data: newQuiz }, { status: 201 });
+    return new Response(JSON.stringify({ success: true, data: newQuiz }), {
+      status: 201,
+    });
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: error.message || "Failed to create quiz" },
-      { status: 500 }
-    );
-  }
-}
-
-// DELETE quiz by ID
-export async function DELETE(request) {
-  try {
-    await dbConnect();
-    const { id } = request.query;
-
-    const quiz = await Quiz.findById(id);
-    if (!quiz) {
-      return NextResponse.json(
-        { success: false, error: "Quiz not found" },
-        { status: 404 }
-      );
-    }
-
-    await quiz.remove();
-    return NextResponse.json({ success: true, data: {} });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: error.message || "Failed to delete quiz" },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ success: false, error: error.message }),
+      { status: 400 }
     );
   }
 }

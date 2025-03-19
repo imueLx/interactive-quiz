@@ -35,7 +35,9 @@ const QuizResults = ({
           </h1>
           <div className="text-xl text-gray-600 font-medium">
             You completed{" "}
-            {quizTopics.find((t) => t.id === ruleId)?.name || "the quiz"}!
+            {quizTopics.find((t) => t.ruleNumber === ruleId)?.title ||
+              "the quiz"}
+            !
           </div>
         </div>
 

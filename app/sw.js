@@ -1,4 +1,4 @@
-import { Serwist, NetworkFirst, StaleWhileRevalidate } from "serwist";
+import { Serwist, NetworkFirst } from "serwist";
 import { defaultCache } from "@serwist/next/worker";
 
 const serwist = new Serwist({
@@ -9,6 +9,14 @@ const serwist = new Serwist({
   runtimeCaching: [
     {
       matcher: ({ url }) => url.pathname.startsWith("/quiz"),
+      handler: new NetworkFirst({
+        cacheName: "quiz-pages",
+        networkTimeoutSeconds: 2,
+        matchOptions: { ignoreSearch: true },
+      }),
+    },
+    {
+      matcher: ({ url }) => url.pathname.startsWith("/progress"),
       handler: new NetworkFirst({
         cacheName: "quiz-pages",
         networkTimeoutSeconds: 2,
@@ -37,6 +45,9 @@ const serwist = new Serwist({
     { url: "/api/all-questions", revision: "1" },
     { url: "/quiz", revision: "1" },
     { url: "/quizzes", revision: "1" },
+    { url: "/start-quiz", revision: "1" },
+    { url: "/api/detailed-results", revision: "1" },
+    { url: "/api/get-title", revision: "1" },
   ],
 });
 
@@ -47,12 +58,9 @@ self.addEventListener("activate", (event) => {
       try {
         const cache = await caches.open("quiz-pages");
         const response = await fetch("/api/all-questions");
-
         if (!response.ok) throw new Error("Failed to fetch quiz data");
-
         const quizzes = await response.json();
         const urls = quizzes.map((quiz) => `/quiz?rule=${quiz.ruleNumber}`);
-
         await cache.addAll([...urls, "/quiz"]);
       } catch (error) {
         console.error("Error caching quiz pages:", error);
@@ -72,14 +80,13 @@ self.addEventListener("fetch", (event) => {
         .match(event.request, { ignoreSearch: true })
         .then(async (cachedResponse) => {
           if (cachedResponse) return cachedResponse;
-
           try {
             const response = await fetch(event.request);
             const cache = await caches.open("quiz-pages");
-            cache.put(event.request, response.clone()); // Cache the new quiz page dynamically
+            cache.put(event.request, response.clone());
             return response;
           } catch (error) {
-            return caches.match("/offline"); // Show offline page if network fails
+            return caches.match("/offline");
           }
         })
     );
