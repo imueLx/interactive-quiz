@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@serwist/next": "^9.0.12",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^16.4.7",
     "framer-motion": "^12.5.0",
     "idb": "^8.0.2",
     "mongoose": "^8.12.1",
@@ -19,6 +20,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "recharts": "^2.15.1",
     "serwist": "^9.0.12",
     "use-sound": "^5.0.0"
   },

@@ -10,7 +10,7 @@ export default function Home() {
       <section className="container mx-auto px-4 md:px-6 py-8 md:py-12 text-center">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-blue-600 mb-4 md:mb-6 leading-tight">
-            <span className="inline-block">📚 English</span>
+            <span className="inline-block">📚 English</span>{" "}
             <span className="inline-block">Adventure Time! 🌟</span>
           </h1>
 
@@ -22,7 +22,7 @@ export default function Home() {
             <span>reading superpowers! 💪</span>
           </p>
 
-          <Link href="/quiz">
+          <Link href="/start-quiz">
             <button className="cursor-pointer bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 md:px-8 md:py-4 rounded-xl md:rounded-2xl text-lg md:text-xl shadow-lg hover:scale-105 transition-all flex items-center gap-2 mx-auto">
               <FaRocket className="text-xl md:text-2xl animate-pulse" />
               <span className="hidden md:inline">Start Learning</span>{" "}

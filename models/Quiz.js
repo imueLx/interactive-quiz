@@ -13,6 +13,7 @@ const quizSchema = new mongoose.Schema({
   questions: { type: [questionSchema], required: true },
 });
 
-const Quiz = mongoose.model("Quiz", quizSchema);
+// Fix: Prevent re-compilation of the model
+const Quiz = mongoose.models.Quiz || mongoose.model("Quiz", quizSchema);
 
 module.exports = Quiz;

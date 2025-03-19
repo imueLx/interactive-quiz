@@ -1,68 +1,71 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaBookOpen, FaPuzzlePiece, FaCheckCircle } from "react-icons/fa";
+import { FaPuzzlePiece } from "react-icons/fa";
 
-const quizTopics = [
-  { id: "rule1", name: "Subjects & Verbs Must Agree", color: "bg-blue-500" },
-  { id: "rule2", name: "Words Between Subject & Verb", color: "bg-green-500" },
-  { id: "rule3", name: "Prepositional Phrases", color: "bg-purple-500" },
-  { id: "rule4", name: "'There' & 'Here' Sentences", color: "bg-yellow-500" },
-  { id: "rule5", name: "Questions & Subject Placement", color: "bg-pink-500" },
-  { id: "rule6", name: "Compound Subjects ('and')", color: "bg-red-500" },
-  { id: "rule7", name: "Same Entity Compound Subjects", color: "bg-teal-500" },
-  {
-    id: "rule8",
-    name: "Each, Every, No - Singular Rule",
-    color: "bg-orange-500",
-  },
-  {
-    id: "rule9",
-    name: "Singular Subjects with 'Or'/'Nor'",
-    color: "bg-indigo-500",
-  },
-  {
-    id: "rule10",
-    name: "Prepositional Phrases & Quantifiers",
-    color: "bg-lime-500",
-  },
-  { id: "rule11", name: "Units of Measurement", color: "bg-cyan-500" },
-  {
-    id: "rule12",
-    name: "Plural Subjects with 'Or'/'Nor'",
-    color: "bg-rose-500",
-  },
-  {
-    id: "rule13",
-    name: "Mixed Subjects with 'Or'/'Nor'",
-    color: "bg-fuchsia-500",
-  },
-  { id: "rule14", name: "Indefinite Pronouns", color: "bg-violet-500" },
-  {
-    id: "rule15",
-    name: "Plural Pronouns: Few, Many, Several",
-    color: "bg-emerald-500",
-  },
-  {
-    id: "rule16",
-    name: "Two Infinitives Joined by 'And'",
-    color: "bg-blue-400",
-  },
-  { id: "rule17", name: "Gerunds as Subjects", color: "bg-green-400" },
-  { id: "rule18", name: "Collective Nouns", color: "bg-purple-400" },
-  {
-    id: "rule19",
-    name: "Titles of Books, Movies, & Novels",
-    color: "bg-yellow-400",
-  },
-  {
-    id: "rule20",
-    name: "Only the Subject Affects the Verb",
-    color: "bg-pink-400",
-  },
+// Define a list of color classes to cycle through
+const colorClasses = [
+  "bg-blue-500",
+  "bg-green-500",
+  "bg-purple-500",
+  "bg-yellow-500",
+  "bg-pink-500",
+  "bg-red-500",
+  "bg-teal-500",
+  "bg-orange-500",
+  "bg-indigo-500",
+  "bg-lime-500",
+  "bg-cyan-500",
+  "bg-rose-500",
+  "bg-fuchsia-500",
+  "bg-violet-500",
+  "bg-emerald-500",
+  "bg-blue-400",
+  "bg-green-400",
+  "bg-purple-400",
+  "bg-yellow-400",
+  "bg-pink-400",
 ];
 
 export default function QuizzesPage() {
   const router = useRouter();
+  const [topics, setTopics] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch topics from the /api/get-title endpoint on mount.
+  useEffect(() => {
+    async function loadTopics() {
+      setLoading(true);
+      // Try to load topics from localStorage first.
+      const stored = localStorage.getItem("quizTopics");
+      if (stored) {
+        setTopics(JSON.parse(stored));
+      } else {
+        try {
+          const res = await fetch("/api/get-title");
+          const data = await res.json();
+          setTopics(data);
+          localStorage.setItem("quizTopics", JSON.stringify(data));
+        } catch (err) {
+          console.error("Error fetching topics:", err);
+        }
+      }
+      setLoading(false);
+    }
+    loadTopics();
+  }, []);
+
+  // Handle topic selection: store the selected rule in localStorage and navigate to /quiz.
+  const handleTopicSelect = (topic) => {
+    // Retrieve any existing studentData from localStorage.
+    const storedData = localStorage.getItem("studentData");
+    const studentData = storedData ? JSON.parse(storedData) : {};
+    // Set the selected rule to the topic's _id.
+    studentData.rule = topic.ruleNumber;
+    localStorage.setItem("studentData", JSON.stringify(studentData));
+    // Navigate to the static /quiz page.
+    router.push("/start-quiz");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-green-100 py-10 px-6">
@@ -75,21 +78,40 @@ export default function QuizzesPage() {
         </p>
       </div>
 
-      {/* Quiz Topic List */}
-      <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {quizTopics.map((topic, index) => (
-          <div
-            key={topic.id}
-            onClick={() => router.push("/quiz?topic=" + topic.id)}
-            className={`${topic.color} p-6 rounded-3xl shadow-lg text-white cursor-pointer transition-all hover:scale-105 hover:shadow-xl flex items-center gap-4`}
-          >
-            <FaPuzzlePiece className="text-4xl animate-spin-slow" />
-            <span className="font-semibold text-lg">{topic.name}</span>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div
+              key={index}
+              className="bg-gray-300 p-6 rounded-3xl shadow-lg animate-pulse"
+            >
+              <div className="h-10 bg-gray-400 rounded w-3/4 mb-4"></div>
+              <div className="h-6 bg-gray-400 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {topics.map((topic, index) => {
+            // Use the topic's ruleNumber (or index) to select a color.
+            const ruleNum = Number(topic.ruleNumber) || index + 1;
+            const colorClass =
+              colorClasses[(ruleNum - 1) % colorClasses.length];
 
-      {/* Button to Go Back */}
+            return (
+              <div
+                key={topic._id}
+                onClick={() => handleTopicSelect(topic)}
+                className={`${colorClass} p-6 rounded-3xl shadow-lg text-white cursor-pointer transition-all hover:scale-105 hover:shadow-xl flex items-center gap-4`}
+              >
+                <FaPuzzlePiece className="text-4xl animate-spin-slow" />
+                <span className="font-semibold text-lg">{`Rule ${topic.ruleNumber}: ${topic.title}`}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       <div className="text-center mt-12">
         <button
           onClick={() => router.push("/")}

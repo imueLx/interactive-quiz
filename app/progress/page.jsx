@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaBook,
   FaPencilAlt,
@@ -54,69 +54,63 @@ const ruleIcons = [
   { icon: FaScroll, color: "text-brown-500" },
 ];
 
-const userIcons = [
-  FaUserCircle,
-  FaSmile,
-  FaUserNinja,
-  FaUserAstronaut,
-  FaUserSecret,
-];
-
-const quizTopics = [
-  { id: "rule1", name: "Rule 1: Subjects & Verbs" },
-  { id: "rule2", name: "Rule 2: Prepositional Phrases" },
-  { id: "rule3", name: "Rule 3: Compound Subjects" },
-  { id: "rule4", name: "Rule 4: There/Here Subjects" },
-  { id: "rule5", name: "Rule 5: Question Subjects" },
-  { id: "rule6", name: "Rule 6: And-Connected Subjects" },
-  { id: "rule7", name: "Rule 7: Same Entity Subjects" },
-  { id: "rule8", name: "Rule 8: Each/Every/No" },
-  { id: "rule9", name: "Rule 9: Either/Or Subjects" },
-  { id: "rule10", name: "Rule 10: Prepositional Quantities" },
-  { id: "rule11", name: "Rule 11: Units of Measurement" },
-  { id: "rule12", name: "Rule 12: Or/Nor with Plural Subjects" },
-  { id: "rule13", name: "Rule 13: Mixed Or/Nor Subjects" },
-  { id: "rule14", name: "Rule 14: Indefinite Pronouns" },
-  { id: "rule15", name: "Rule 15: Plural Pronouns (Few, Many, Several)" },
-  { id: "rule16", name: "Rule 16: Two Infinitives with 'And'" },
-  { id: "rule17", name: "Rule 17: Gerunds as Subjects" },
-  { id: "rule18", name: "Rule 18: Collective Nouns" },
-  { id: "rule19", name: "Rule 19: Titles of Books, Movies, & Novels" },
-  { id: "rule20", name: "Rule 20: Subject Determines the Verb" },
-];
-
 export default function ProgressPage() {
   const [quizResults, setQuizResults] = useState([]);
+  const [topics, setTopics] = useState([]);
   const [expandedTopics, setExpandedTopics] = useState([]);
   const [collapsedRules, setCollapsedRules] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch quiz results on page load
+  // Fetch quiz results on page load.
   useEffect(() => {
     const fetchResults = async () => {
-      setLoading(true); // Set loading to true before fetching
+      setLoading(true);
       try {
         const response = await fetch("/api/results");
         const data = await response.json();
+        console.log("Fetched results:", data);
         setQuizResults(data);
       } catch (error) {
         console.error("Error fetching results:", error);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
-
     fetchResults();
   }, []);
 
-  const toggleCollapse = (ruleId) => {
+  // Fetch topics from localStorage or API.
+  useEffect(() => {
+    async function loadTopics() {
+      const stored = localStorage.getItem("quizTopics");
+      if (stored) {
+        setTopics(JSON.parse(stored));
+        console.log("Loaded topics from localStorage:", stored);
+      } else {
+        try {
+          const res = await fetch("/api/get-title");
+          const data = await res.json();
+          console.log("Fetched topics:", data);
+          setTopics(data);
+          localStorage.setItem("quizTopics", JSON.stringify(data));
+        } catch (error) {
+          console.error("Error fetching topics:", error);
+        }
+      }
+    }
+    loadTopics();
+  }, []);
+
+  // Toggle collapse using topic._id.
+  const toggleCollapse = (topicId) => {
     setCollapsedRules((prev) =>
-      prev.includes(ruleId)
-        ? prev.filter((r) => r !== ruleId)
-        : [...prev, ruleId]
+      prev.includes(topicId)
+        ? prev.filter((r) => r !== topicId)
+        : [...prev, topicId]
     );
   };
 
+  // Toggle expanded state (also using topic._id).
   const toggleExpanded = (topicId) => {
     setExpandedTopics((prev) =>
       prev.includes(topicId)
@@ -126,6 +120,13 @@ export default function ProgressPage() {
   };
 
   const getRandomUserIcon = () => {
+    const userIcons = [
+      FaUserCircle,
+      FaSmile,
+      FaUserNinja,
+      FaUserAstronaut,
+      FaUserSecret,
+    ];
     const randomIndex = Math.floor(Math.random() * userIcons.length);
     return userIcons[randomIndex];
   };
@@ -163,25 +164,29 @@ export default function ProgressPage() {
                   </div>
                 </div>
               ))
-            : quizTopics.map((topic, index) => {
-                const IconComponent = ruleIcons[index].icon;
-                const iconColor = ruleIcons[index].color;
+            : topics.map((topic, index) => {
+                // Cycle through icons if there are more topics than icons.
+                const iconIndex = index % ruleIcons.length;
+                const IconComponent = ruleIcons[iconIndex].icon;
+                const iconColor = ruleIcons[iconIndex].color;
+
+                // Filter quiz results for this topic using ruleNumber.
                 const topicResults = quizResults
-                  .filter((r) => r.ruleId === topic.id)
+                  .filter((r) => r.ruleId === `rule${topic.ruleNumber}`)
                   .sort((a, b) => b.score - a.score);
 
-                const showCount = expandedTopics.includes(topic.id) ? 10 : 3;
+                const showCount = expandedTopics.includes(topic._id) ? 10 : 3;
                 const visibleResults = topicResults.slice(0, showCount);
-                const isCollapsed = collapsedRules.includes(topic.id);
+                const isCollapsed = collapsedRules.includes(topic._id);
 
                 return (
                   <div
-                    key={topic.id}
+                    key={topic._id}
                     className="bg-white p-3 rounded-xl border-2 border-gray-100"
                   >
                     {/* Rule Header with Fun Icon */}
                     <button
-                      onClick={() => toggleCollapse(topic.id)}
+                      onClick={() => toggleCollapse(topic._id)}
                       className="w-full flex items-center justify-between gap-3 p-2 hover:bg-gray-50 rounded-lg"
                     >
                       <div className="flex items-center gap-3">
@@ -191,7 +196,7 @@ export default function ProgressPage() {
                           <IconComponent className={`text-2xl ${iconColor}`} />
                         </div>
                         <h2 className="text-left font-semibold text-gray-800">
-                          {topic.name}
+                          {topic.title} 📚
                         </h2>
                       </div>
                       {isCollapsed ? (
@@ -243,16 +248,16 @@ export default function ProgressPage() {
 
                         {topicResults.length > 3 && (
                           <button
-                            onClick={() => toggleExpanded(topic.id)}
+                            onClick={() => toggleExpanded(topic._id)}
                             className="w-full text-center text-blue-600 hover:text-blue-800 text-sm font-medium pt-2"
                           >
                             <div className="inline-flex items-center gap-1">
-                              {expandedTopics.includes(topic.id)
+                              {expandedTopics.includes(topic._id)
                                 ? "Show less 🎈"
                                 : "View more 🚀"}
                               <FaChevronDown
                                 className={`transition-transform ${
-                                  expandedTopics.includes(topic.id)
+                                  expandedTopics.includes(topic._id)
                                     ? "rotate-180"
                                     : ""
                                 }`}

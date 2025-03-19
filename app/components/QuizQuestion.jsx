@@ -6,6 +6,7 @@ const QuizQuestion = ({
   totalQuestions,
   handleAnswer,
   handleNext,
+  handlePrev,
   handleSubmit,
   selectedAnswers,
   quizTopics,
@@ -24,7 +25,8 @@ const QuizQuestion = ({
         <div className="text-xl font-bold text-pink-600 flex items-center justify-center gap-2">
           <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full animate-float">
             🌟 Current Quest:{" "}
-            {quizTopics.find((t) => t.id === ruleId)?.name || "Mystery Topic"}
+            {quizTopics.find((t) => t.ruleNumber === ruleId)?.title ||
+              "Mystery Topic"}
           </span>
         </div>
       </div>
@@ -81,7 +83,7 @@ const QuizQuestion = ({
         <div className="flex justify-between items-center">
           <button
             disabled={currentQuestion === 0}
-            onClick={() => setCurrentQuestion((prev) => prev - 1)}
+            onClick={handlePrev}
             className="px-6 py-3 bg-blue-400 text-white rounded-xl font-bold shadow-lg hover:bg-blue-500 disabled:opacity-50 transition-all flex items-center gap-2"
           >
             <span className="text-xl">👈</span>

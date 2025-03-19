@@ -1,64 +1,58 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FaUser, FaChild, FaBook, FaRegSmileBeam } from "react-icons/fa";
-
-const quizTopics = [
-  { id: "rule1", name: "Subjects & Verbs Must Agree" },
-  { id: "rule2", name: "Words Between Subject & Verb" },
-  { id: "rule3", name: "Prepositional Phrases" },
-  { id: "rule4", name: "'There' & 'Here' Sentences" },
-  { id: "rule5", name: "Questions & Subject Placement" },
-  { id: "rule6", name: "Compound Subjects ('and')" },
-  { id: "rule7", name: "Same Entity Compound Subjects" },
-  { id: "rule8", name: "Each, Every, No - Singular Rule" },
-  { id: "rule9", name: "Singular Subjects with 'Or'/'Nor'" },
-  { id: "rule10", name: "Prepositional Phrases & Quantifiers" },
-  { id: "rule11", name: "Units of Measurement" },
-  { id: "rule12", name: "Plural Subjects with 'Or'/'Nor'" },
-  { id: "rule13", name: "Mixed Subjects with 'Or'/'Nor'" },
-  { id: "rule14", name: "Indefinite Pronouns" },
-  { id: "rule15", name: "Plural Pronouns: Few, Many, Several" },
-  { id: "rule16", name: "Two Infinitives Joined by 'And'" },
-  { id: "rule17", name: "Gerunds as Subjects" },
-  { id: "rule18", name: "Collective Nouns" },
-  { id: "rule19", name: "Titles of Books, Movies, & Novels" },
-  { id: "rule20", name: "Only the Subject Affects the Verb" },
-];
 
 export default function QuizSelectionForm() {
   const [studentData, setStudentData] = useState({
     name: "",
     age: "",
     grade: "",
-    quizType: "",
+    rule: "",
   });
+  const [topics, setTopics] = useState([]);
   const [isReturningUser, setIsReturningUser] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
-  const searchParams = useSearchParams();
 
+  // Fetch topics from the API endpoint on mount.
+  useEffect(() => {
+    async function loadTopics() {
+      // Try to load topics from localStorage first.
+      const stored = localStorage.getItem("quizTopics");
+      if (stored) {
+        setTopics(JSON.parse(stored));
+      } else {
+        try {
+          const res = await fetch("/api/get-title");
+          const data = await res.json();
+          setTopics(data);
+          localStorage.setItem("quizTopics", JSON.stringify(data));
+        } catch (err) {
+          console.error("Error fetching topics:", err);
+        }
+      }
+    }
+    loadTopics();
+  }, []);
+
+  // Initialize studentData.
   useEffect(() => {
     const savedData = localStorage.getItem("studentData");
-    const urlTopic = searchParams.get("topic"); // Get topic from URL
-
-    // Initialize with default values
-    const initialData = {
+    let initialData = {
       name: "",
       age: "",
       grade: "",
-      quizType: "",
+      rule: "",
       ...(savedData ? JSON.parse(savedData) : {}),
     };
-
-    // Preselect topic from URL if available and valid
-    if (urlTopic && quizTopics.some((topic) => topic.id === urlTopic)) {
-      initialData.quizType = urlTopic;
+    // Ensure the rule is always stored as a string.
+    if (initialData.rule) {
+      initialData.rule = String(initialData.rule);
     }
-
     setStudentData(initialData);
     setIsReturningUser(!!savedData);
-  }, [searchParams]); // Add searchParams to dependency array
+  }, [topics]);
 
   const handleInputChange = (field, value) => {
     setStudentData((prev) => ({ ...prev, [field]: value }));
@@ -70,23 +64,26 @@ export default function QuizSelectionForm() {
       !studentData.name ||
       !studentData.age ||
       !studentData.grade ||
-      !studentData.quizType
+      !studentData.rule
     ) {
       setMessage("⚠️ Please fill in all fields before starting the quiz!");
       return;
     }
 
-    const userData = {
-      ...studentData,
-      lastAccessed: new Date().toISOString(),
-    };
+    // Convert topic.ruleNumber to string for comparison.
+    const selectedTopic = topics.find(
+      (topic) => String(topic.ruleNumber) === String(studentData.rule)
+    );
+    if (!selectedTopic) {
+      setMessage("⚠️ Please select a valid topic!");
+      return;
+    }
 
-    localStorage.setItem("studentData", JSON.stringify(userData));
-    const ruleNumber = studentData.quizType.replace("rule", ""); // Extracts number
-    // Proper URL creation
-    const params = new URLSearchParams();
-    params.set("rule", ruleNumber);
-    router.push(`/quiz?${params.toString()}`);
+    // Update studentData.rule to be the rule number (as a number) if needed.
+    studentData.rule = selectedTopic.ruleNumber;
+    localStorage.setItem("studentData", JSON.stringify(studentData));
+
+    router.push("/quiz");
   };
 
   return (
@@ -96,7 +93,7 @@ export default function QuizSelectionForm() {
           {/* Animated Header */}
           <div className="text-center mb-6">
             {isReturningUser ? (
-              <div className="">
+              <div>
                 <FaRegSmileBeam className="text-6xl text-yellow-400 mx-auto mb-4 animate-bounce" />
                 <h2 className="text-3xl font-bold text-purple-600 mb-2">
                   Welcome Back, {studentData.name}! 🌟
@@ -119,9 +116,9 @@ export default function QuizSelectionForm() {
             )}
           </div>
 
-          {/* Name Input with Character */}
+          {/* Name Input */}
           <div className="bg-blue-100 p-4 rounded-2xl shadow-md">
-            <label className="flex  font-semibold text-lg mb-2  items-center gap-2 text-blue-600">
+            <label className="flex font-semibold text-lg mb-2 items-center gap-2 text-blue-600">
               <FaUser />
               Your Superhero Name:
             </label>
@@ -135,9 +132,9 @@ export default function QuizSelectionForm() {
             />
           </div>
 
-          {/* Age Input with Fun Visual */}
+          {/* Age Input */}
           <div className="bg-green-100 p-4 rounded-2xl shadow-md">
-            <label className="flex font-semibold text-lg mb-2  items-center gap-2 text-green-600">
+            <label className="flex font-semibold text-lg mb-2 items-center gap-2 text-green-600">
               <FaChild />
               Your Adventure Age:
             </label>
@@ -180,24 +177,20 @@ export default function QuizSelectionForm() {
 
           {/* Topic Selection */}
           <div className="bg-pink-100 p-4 rounded-2xl shadow-md">
-            <label className="block font-semibold text-lg mb-2  items-center gap-2 text-pink-600">
+            <label className="block font-semibold text-lg mb-2 items-center gap-2 text-pink-600">
               <FaBook />
               Choose Your Quest:
             </label>
             <select
-              value={studentData.quizType}
-              onChange={(e) => handleInputChange("quizType", e.target.value)}
+              value={studentData.rule}
+              onChange={(e) => handleInputChange("rule", e.target.value)}
               required
               className="w-full text-gray-700 p-3 border-2 border-pink-200 rounded-xl bg-white text-lg focus:ring-2 focus:ring-pink-300 appearance-none"
             >
               <option value="">🔍 Select a Learning Adventure</option>
-              {quizTopics.map((topic) => (
-                <option
-                  key={topic.id}
-                  value={topic.id}
-                  className="flex items-center gap-2"
-                >
-                  {topic.name}
+              {topics.map((topic) => (
+                <option key={topic._id} value={String(topic.ruleNumber)}>
+                  {`Rule ${topic.ruleNumber}: ${topic.title}`}
                 </option>
               ))}
             </select>
