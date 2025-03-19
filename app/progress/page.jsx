@@ -172,7 +172,7 @@ export default function ProgressPage() {
 
                 // Filter quiz results for this topic using ruleNumber.
                 const topicResults = quizResults
-                  .filter((r) => r.ruleId === `rule${topic.ruleNumber}`)
+                  .filter((r) => r.ruleId === topic.ruleNumber)
                   .sort((a, b) => b.score - a.score);
 
                 const showCount = expandedTopics.includes(topic._id) ? 10 : 3;

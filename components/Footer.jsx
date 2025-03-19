@@ -8,7 +8,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-purple-400 to-blue-300 text-white mt-16 pb-12 pt-8">
+    <footer className="bg-gradient-to-r from-purple-400 to-blue-300 text-white  pb-12 pt-8">
       <div className="container mx-auto px-6 text-center">
         {/* Floating Icons */}
         <div className="mb-8 flex justify-center space-x-6">

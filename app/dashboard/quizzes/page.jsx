@@ -47,7 +47,7 @@ export default function QuizzesPage() {
   return (
     <div className="p-4 sm:p-6 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 space-y-2 sm:space-y-0">
-        <h2 className="text-xl sm:text-2xl font-semibold">Manage Quizzes</h2>
+        <h2 className="text-xl sm:text-2xl font-semibold">Manage Questions:</h2>
         <Link
           href="/dashboard/quizzes/new"
           className="flex items-center bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white px-3 sm:px-4 py-2 rounded shadow"
@@ -66,7 +66,7 @@ export default function QuizzesPage() {
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                  Rule #
+                  Rule
                 </th>
                 <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                   Title

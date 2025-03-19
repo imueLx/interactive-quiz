@@ -37,6 +37,8 @@ export async function GET(req) {
         age: entry.age,
         grade: entry.grade,
         ruleId: entry.ruleId,
+        title: entry.title,
+        description: entry.description,
         score: entry.score,
         correct: correctCount,
         incorrect: incorrectCount,

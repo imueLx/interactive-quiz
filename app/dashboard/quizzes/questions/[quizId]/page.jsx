@@ -3,10 +3,15 @@ import { useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
 import { use } from "react";
+import Loading from "./loading";
 
 async function getQuestions(quizId) {
-  // Use absolute URL for server-side fetch
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  // Determine the base URL based on the environment.
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? process.env.NEXT_PUBLIC_API_URL ||
+        "https://interactive-english-quiz.vercel.app"
+      : "http://localhost:3000";
   const res = await fetch(`${baseUrl}/api/quizzes/${quizId}`, {
     cache: "no-store",
   });
@@ -28,7 +33,7 @@ export default function QuestionsPage({ params }) {
   }, [unwrappedParams.quizId]);
 
   if (!quiz) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
@@ -37,10 +42,12 @@ export default function QuestionsPage({ params }) {
         href="/dashboard/"
         className="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mb-4"
       >
-        <FaArrowLeft className="mr-2" /> Back to Quizzes
+        <FaArrowLeft className="mr-2" /> Back to Dashboard
       </Link>
 
-      <h2 className="text-2xl font-semibold mb-4">{quiz.title} - Questions</h2>
+      <h2 className="text-2xl font-semibold mb-4">
+        {quiz.title} - Questions and Correct Answers
+      </h2>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         {quiz.questions?.length > 0 ? (

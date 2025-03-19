@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Quiz App",
+  title: "E-Quiz App",
   description: "Learn English Grammar the Fun Way! 🎉",
   category: "website",
   generator: "Next.js",
@@ -24,7 +24,7 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Quiz App",
+    title: "E-Quiz App",
   },
   icons: [
     { rel: "apple-touch-icon", url: "apple-icon.png" },
@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
         <meta name="theme-color" content="#000000" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <Header />
         <main className="min-h-screen">

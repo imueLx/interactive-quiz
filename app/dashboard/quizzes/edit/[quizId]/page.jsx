@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import QuizForm from "../../../../components/QuizForm";
 import { use } from "react";
+import Loading from "./loading";
 
 export default function EditQuizPage({ params }) {
   const unwrappedParams = use(params);
@@ -16,7 +17,7 @@ export default function EditQuizPage({ params }) {
     fetchQuiz();
   }, [unwrappedParams.quizId]);
 
-  if (!initialData) return <div>Loading...</div>;
+  if (!initialData) return <Loading />;
 
   return <QuizForm initialData={initialData} mode="editing" />;
 }

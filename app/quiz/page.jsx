@@ -113,7 +113,10 @@ export default function QuizPage() {
       const studentData = storedData ? JSON.parse(storedData) : null;
 
       const payload = {
-        ruleId: selectedTopic ? `rule${selectedTopic.ruleNumber}` : null,
+        ruleId: selectedTopic ? selectedTopic.ruleNumber : null,
+        // Added topic details from quizTopics:
+        title: selectedTopic ? selectedTopic.title : null,
+        description: selectedTopic ? selectedTopic.description : null,
         results,
         studentData,
         timestamp: new Date().toISOString(),
@@ -133,7 +136,6 @@ export default function QuizPage() {
       setIsSubmitting(false);
     }
   };
-
   // API submission helper.
   const submitResults = async (payload) => {
     try {

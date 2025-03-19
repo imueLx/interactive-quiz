@@ -8,13 +8,23 @@ const QuizResult =
 export async function POST(req) {
   try {
     const body = await req.json(); // Parse request body
-    const { ruleId, results, studentData, timestamp } = body;
+    const { ruleId, results, studentData, timestamp, title, description } =
+      body;
 
     // Destructure student data fields
     const { name, age, grade } = studentData;
 
     // Check if all required fields are present
-    if (!ruleId || !results || !name || !age || !grade || !timestamp) {
+    if (
+      !ruleId ||
+      !results ||
+      !name ||
+      !age ||
+      !grade ||
+      !timestamp ||
+      !title ||
+      !description
+    ) {
       return new Response(
         JSON.stringify({ message: "Missing required fields" }),
         { status: 400 }
@@ -33,9 +43,11 @@ export async function POST(req) {
       age,
       grade,
       ruleId,
+      title,
+      description,
       score,
       results,
-      createdAt: new Date(timestamp), // Use the timestamp from payload
+      createdAt: new Date(timestamp),
     });
 
     return new Response(

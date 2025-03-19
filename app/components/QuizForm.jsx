@@ -20,7 +20,7 @@ export default function QuizForm({ initialData, mode }) {
   const inputClasses =
     "w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500";
   const sectionClasses =
-    "bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border dark:border-gray-700";
+    "bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border dark:border-gray-700";
   const buttonClasses =
     "flex items-center justify-center px-4 py-2 rounded transition-colors";
 
@@ -104,7 +104,7 @@ export default function QuizForm({ initialData, mode }) {
   };
 
   return (
-    <div className="p-6 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="p-6 dark:text-gray-100 bg-gray-50 dark:bg-gray-800 min-h-screen">
       <div className="fixed top-[65px] left-0 right-0 bg-gray-50 dark:bg-gray-900 z-40 py-4 shadow-md px-6">
         <div className="flex justify-between items-center mb-4">
           <Link
