@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import RegisterSW from "./register-sw";
 import DataInitializer from "@/components/DataInitializer";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#000000" />
       </head>
@@ -58,6 +60,7 @@ export default function RootLayout({ children }) {
           <DataInitializer />
           {children}
           <Analytics />
+          <SpeedInsights />
         </main>
         <Footer />
         <RegisterSW />

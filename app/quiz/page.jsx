@@ -152,6 +152,16 @@ export default function QuizPage() {
     }
   };
 
+  // Define a shuffle function using Fisher-Yates algorithm
+  function shuffleArray(array) {
+    const newArr = [...array];
+    for (let i = newArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+    }
+    return newArr;
+  }
+
   // Sync pending submissions when online.
   useEffect(() => {
     const syncPendingSubmissions = async () => {
@@ -196,9 +206,13 @@ export default function QuizPage() {
           );
           if (!response.ok) throw new Error("Failed to fetch");
           const freshData = await response.json();
+
+          // Shuffle the questions array before setting the state
+          const shuffledQuestions = shuffleArray(freshData.questions);
+
           const validatedData = {
             ruleNumber: parsedRule,
-            questions: freshData.questions,
+            questions: shuffledQuestions,
             topic: freshData.topic || `Rule ${parsedRule}`,
             description: freshData.description || "",
           };
