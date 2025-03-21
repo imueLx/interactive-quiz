@@ -37,9 +37,6 @@ export default function DashboardPage() {
         {/* Quizzes Management */}
         {activeTab === "quizzes" && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-6 dark:text-gray-100">
-              Manage Questions
-            </h2>
             <QuizzesPage />
           </div>
         )}

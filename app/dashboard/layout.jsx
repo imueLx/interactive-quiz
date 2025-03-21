@@ -14,7 +14,7 @@ export default async function DashboardLayout({ children }) {
   if (!session) redirect("/login");
 
   return (
-    <div className="p-6 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className=" dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
       {/* Sticky Navbar */}
       <nav className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -37,7 +37,7 @@ export default async function DashboardLayout({ children }) {
       </nav>
 
       {/* Main Content with Padding to Avoid Navbar Overlap */}
-      <main className="max-w-7xl mx-auto px-6 py-[120px]">{children}</main>
+      <main className="max-w-7xl  ">{children}</main>
     </div>
   );
 }
